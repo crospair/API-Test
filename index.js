@@ -8,5 +8,5 @@ const PORT = 3000;
 InitiateApp(App,express);
 
 App.listen(PORT,()=>{
-    console.log(`App Listening On Port ${PORT}`);
+    console.log(`App Listening On Port ${PORT}!`);
 })
