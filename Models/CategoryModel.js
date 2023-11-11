@@ -18,11 +18,17 @@ const CategorySchema = new Schema({
         default:'Active',
         enum:['Active','Inactive'],
     },
-    CreatedBy:{type:Types.ObjectId,ref:'User'},
-    EditedBy:{type:Types.ObjectId,ref:'User'},
+    CreatedBy:{type:Types.ObjectId,ref:'User',required:true},
+    UpdatedBy:{type:Types.ObjectId,ref:'User',required:true},
 },{
     timestamps:true,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
 });
-
+CategorySchema.virtual('SubCategory',{
+    localField:"_id",
+    foreignField:"CategoryID",
+    ref:'SubCategory'
+})
 const CategoryModel = mongoose.models.Category || model('Category',CategorySchema);
 export default CategoryModel;
