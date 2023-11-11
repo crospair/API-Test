@@ -18,7 +18,7 @@ export const SignUp = async (req,res)=>{
 
     const {Token} = jwt.sign({Email},process.env.CONFIRMSECRET)
 
-    await SendEmail(Email,"Verification",`<a href='https://localhost:3000/Auth/ConfirmEmail/${Token}'>Welcome</a>`)
+    await SendEmail(Email,"Verification",`<a href='http://localhost:3000/Auth/ConfirmEmail/${Token}'>Welcome</a>`)
 
     const CreateUser = await UserModel.create({Username,Email,Password:HashedPass,ProfilePicture:{secure_url,public_id},Gender});
     return res.status(200).json({Message:"Success",CreateUser});

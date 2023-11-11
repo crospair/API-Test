@@ -19,7 +19,7 @@ const SubCategorySchema = new Schema({
     },
     CategoryID:{type:Types.ObjectId,ref:'Category',required:true},
     CreatedBy:{type:Types.ObjectId,ref:'User'},
-    EditedBy:{type:Types.ObjectId,ref:'User'},
+    UpdatedBy:{type:Types.ObjectId,ref:'User'},
 },{
     timestamps:true,
 })
