@@ -5,9 +5,8 @@ export async function SendEmail(to,subject,html){
 const transporter = nodemailer.createTransport({
   service:'gmail',
   auth: {
-    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-    user: "ramezsalhab@gmail.com",
-    pass: "dzpm icww yabb jwgn",
+    user: process.env.MAILEREMAIL,
+    pass: process.env.MAILERPASS,
   },
 });
 
