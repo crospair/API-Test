@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
   // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: '"Exoteryx Email Confirmation System" <ramezsalhab@gmail.com>', // sender address
+    from: `"Exoteryx Email Confirmation System" <${process.env.MAILEREMAIL}>`, // sender address
     to, // list of receivers
     subject, // Subject line
     html, // html body

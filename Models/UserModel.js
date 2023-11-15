@@ -45,6 +45,10 @@ const UserSchema = new Schema({
         default:"Unspecified",
         enum:['Male','Female','Unspecified'],
     },
+    SendCode:{
+        type:String,
+        default:null,
+    },
 },{
     timestamps:true,
 });
