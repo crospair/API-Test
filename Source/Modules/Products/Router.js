@@ -7,7 +7,7 @@ import fileUpload , {FileTypes} from "../../../Services/Multer.js";
 const Nav = Router();
 
 Nav.get('/',Auth(EndPoint.GetAll),ProductController.GetProducts)
-Nav.post('/',Auth(EndPoint.Create),fileUpload(FileTypes.image).fields([
+Nav.post('/Create',Auth(EndPoint.Create),fileUpload(FileTypes.image).fields([
     {name:'MainImage',maxCount:1},
     {name:'SubImages',maxCount:4}
 ]),ProductController.CreateProduct)
