@@ -35,7 +35,7 @@ export const Signin = async (req,res)=>{
         return res.status(400).json({Message:"Invalid Password"});
     }
     const Token = jwt.sign({ID:User._id,Role:User.Role,Status:User.Status},process.env.LOGINSIGNATURE,
-        {expiresIn: '5m'});
+        {expiresIn: '50m'});
     const RefreshToken = jwt.sign({ID:User._id,Role:User.Role,Status:User.Status},process.env.LOGINSIGNATURE,
         {expiresIn: 60*60*24})
     return res.status(200).json({Message:"Success",Token,RefreshToken});

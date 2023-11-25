@@ -14,7 +14,7 @@ const ProductSchema = new Schema({
     },
     Stock:{
         type:String,
-        required:true
+        default:1
     },
     Price:{
         type:String,
@@ -48,8 +48,8 @@ const ProductSchema = new Schema({
         type:Boolean,
         default:false
     },
-    Category:{type:Types.ObjectId,ref:'Category',required:true},
-    SubCategory:{type:Types.ObjectId,ref:'SubCategory',required:true},
+    CategoryID:{type:Types.ObjectId,ref:'Category',required:true},
+    SubCategoryID:{type:Types.ObjectId,ref:'SubCategory',required:true},
     CreatedBy:{type:Types.ObjectId,ref:'User',required:true},
     UpdatedBy:{type:Types.ObjectId,ref:'User',required:true},
 },{

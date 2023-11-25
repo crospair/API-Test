@@ -47,10 +47,10 @@ export const UpdateCategory = async (req,res)=>{
         Category.Status = req.body.Status;
     }
     if(req.file){
-        const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{
+        const {secure_url,public_id} = await Cloudinary.uploader.upload(req.file.path,{
             folder:`${process.env.APP_NAME}/Categories`,
         })
-        await cloudinary.uploader.destroy(Category.Image.public_id);
+        await Cloudinary.uploader.destroy(Category.Image.public_id);
         Category.Image = {secure_url,public_id};
     }
     Category.UpdatedBy = req.user._id;

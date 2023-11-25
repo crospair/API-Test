@@ -1,7 +1,7 @@
 import multer from "multer";
 
 export const FileTypes = {
-    image:['image/png','image/jpg','image/webp'],
+    image:['image/png','image/jpg','image/webp','image/jpeg','image/bmp'],
     PDF:['application/pdf'],
 }
 

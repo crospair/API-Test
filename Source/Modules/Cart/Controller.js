@@ -33,7 +33,7 @@ return res.status(201).json({Message:"Success",Cart});
 
 export const RemoveItem = async (req,res)=>{
     const {ProductID} = req.body;
-    const Cart = await CartModel.updateOne({UserID:req.user._Id},{
+    const Cart = await CartModel.findOneAndUpdate({UserID:req.user._Id},{
         $pull:{
             Products:{
                 ProductID

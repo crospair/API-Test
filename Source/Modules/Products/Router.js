@@ -11,5 +11,9 @@ Nav.post('/Create',Auth(EndPoint.Create),fileUpload(FileTypes.image).fields([
     {name:'MainImage',maxCount:1},
     {name:'SubImages',maxCount:4}
 ]),ProductController.CreateProduct)
+Nav.put('/Update',Auth(EndPoint.Update),fileUpload(FileTypes.image).fields([
+    {name:'MainImage',maxCount:1},
+    {name:'SubImages',maxCount:4}
+]))
 
 export default Nav;

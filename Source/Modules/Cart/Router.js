@@ -7,7 +7,7 @@ const Nav = Router();
 
 Nav.post('/Create',Auth(Endpoint.Create),CartController.CreateCart);
 Nav.patch('/Remove',Auth(Endpoint.Remove),CartController.RemoveItem);
-Nav.patch('/Clear',Auth(Endpoint.Clear))
+Nav.patch('/Clear',Auth(Endpoint.Clear),CartController.ClearCart)
 Nav.get('/',Auth(Endpoint.Get),CartController.GetCart);
 
 

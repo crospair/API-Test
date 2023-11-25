@@ -17,11 +17,11 @@ export const CreateProduct = async (req,res)=>{
     }
     const CheckSubCategory = await SubCategoryModel.findById(SubCategoryID);
     if(!CheckSubCategory){
-        return res.status(404).json({Message:"SubCategory  Not Found"});
+        return res.status(404).json({Message:"SubCategory Not Found"});
     }
     req.body.Slug = slugify(Name);
     req.body.FinalPrice = Price - (Price * (Discount || 0) / 100);
-    const {secure_url,public_id} = Cloudinary.uploader.upload(req.files.MainImage[0],
+    const {secure_url,public_id} = Cloudinary.uploader.upload(req.files.MainImage[0].path,
         {folder:`${process.env.APP_NAME}/Products/${req.body.Name}/Main_Image`});
     req.body.MainImage = {secure_url,public_id};
     req.body.SubImages = [];
@@ -30,11 +30,38 @@ export const CreateProduct = async (req,res)=>{
         folder:`${process.env.APP_NAME}/Products/${req.body.Name}/Sub_Images`});
         req.body.SubImages = {secure_url,public_id}
     }
-    req.body.CreatedBy = req.User._id;
-    req.body.UpdatedBy = req.User._id;
+    req.body.CreatedBy = req.user._id;
+    req.body.UpdatedBy = req.user._id;
     const Save = await ProductModel.create(req.body);
     if(!Save){
         return res.status(400).json({Message:"Error While Creating Product"});
     }
     return res.status(200).json({Message:"Success",Save});
+}
+
+export const UpdateProduct = async (req,res)=>{
+    const Product = await ProductModel.findById(req.params.id);
+    if(!Product){
+        return res.status(400).json({Message:`Invalid Product ID:${req.params.id}`})
+    }
+    if(req.body.Name){
+        if(await ProductModel.findOne({Name:req.body.Name}).select("Name")){
+            return res.status(409).json({Message:"Product Name Already in Use"});
+        }
+        Product.Name = req.body.Name;
+        Product.Slug = slugify(req.body.Name);
+    }
+    if(req.body.Status){
+        Product.Status = req.body.Status;
+    }
+    if(req.file){
+        const {secure_url,public_id} = await Cloudinary.uploader.upload(req.file.path,{
+            folder:`${process.env.APP_NAME}/Products/'${req.body.Name}/MainImage`
+        });
+        await Cloudinary.uploader.destroy(Product.MainImage.public_id);
+        Product.MainImage = {secure_url,public_id}
+    }
+    Product.UpdatedBy = req.user._id;
+    await Product.save()
+    return res.status(200).json({Message:"Success",Product});
 }
