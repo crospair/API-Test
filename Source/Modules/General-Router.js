@@ -6,6 +6,8 @@ import CouponRouter from './Coupon/Router.js';
 import Connect from '../../Database/Connection.js';
 import CartRouter from './Cart/Router.js';
 import ProductRouter from './Products/Router.js'
+import OrderRouter from './Order/Router.js';
+import { GlobalErrorHandler } from '../Middleware/ErrorHandling.js';
 
 const InitiateApp = async (App,express)=>{
     App.use(express.json());
@@ -17,12 +19,14 @@ const InitiateApp = async (App,express)=>{
     App.use('/Coupon',CouponRouter);
     App.use('/Product',ProductRouter);
     App.use('/Cart', CartRouter);
+    App.use('/Order',OrderRouter);
     App.get('/',(req,res)=>{
         res.json({Message:"Welcome"})
-    })
+    });
     App.get('*',(req,res)=>{
         res.json({Message:"Page Not Found"})
-    })
+    });
+    App.use(GlobalErrorHandler);
 }
 
 export default InitiateApp;

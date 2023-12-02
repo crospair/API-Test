@@ -2,25 +2,24 @@ import slugify from "slugify";
 import CategoryModel from "../../../Models/CategoryModel.js";
 import SubCategoryModel from "../../../Models/SubCategoryModel.js";
 import Cloudinary from "../../../Services/Cloudinary.js";
-import { nanoid } from "nanoid";
 import ProductModel from "../../../Models/ProductModel.js";
 
-export const GetProducts = (req,res)=>{
+export const GetProducts = (req,res,next)=>{
     res.json({Message:"Products"});
 }
 
-export const CreateProduct = async (req,res)=>{
+export const CreateProduct = async (req,res,next)=>{
     const {Name,Price,Discount,CategoryID,SubCategoryID} = req.body;
     const CheckCategory = await CategoryModel.findById(CategoryID);
     if(!CheckCategory){
-        return res.status(404).json({Message:"Category Not Found"});
+        return next(new Error("Category Not Found",{cause:404}));
     }
     const CheckSubCategory = await SubCategoryModel.findById(SubCategoryID);
     if(!CheckSubCategory){
-        return res.status(404).json({Message:"SubCategory Not Found"});
+        return next(new Error("SubCategory Not Found",{cause:404}));
     }
     req.body.Slug = slugify(Name);
-    req.body.FinalPrice = Price - (Price * (Discount || 0) / 100);
+    req.body.FinalPrice = Price - (Price * (Discount || 0) / 100).toFixed(2);
     const {secure_url,public_id} = Cloudinary.uploader.upload(req.files.MainImage[0].path,
         {folder:`${process.env.APP_NAME}/Products/${req.body.Name}/Main_Image`});
     req.body.MainImage = {secure_url,public_id};
@@ -34,19 +33,19 @@ export const CreateProduct = async (req,res)=>{
     req.body.UpdatedBy = req.user._id;
     const Save = await ProductModel.create(req.body);
     if(!Save){
-        return res.status(400).json({Message:"Error While Creating Product"});
+        return next(new Error("Error While Creating Product",{cause:400}));
     }
     return res.status(200).json({Message:"Success",Save});
 }
 
-export const UpdateProduct = async (req,res)=>{
+export const UpdateProduct = async (req,res,next)=>{
     const Product = await ProductModel.findById(req.params.id);
     if(!Product){
-        return res.status(400).json({Message:`Invalid Product ID:${req.params.id}`})
+        return next(new Error(`Invalid Product ID: ${req.params.id}`,{cause:400}));
     }
     if(req.body.Name){
         if(await ProductModel.findOne({Name:req.body.Name}).select("Name")){
-            return res.status(409).json({Message:"Product Name Already in Use"});
+            return next(new Error("Product Name Already in Use!",{cause:409}));
         }
         Product.Name = req.body.Name;
         Product.Slug = slugify(req.body.Name);

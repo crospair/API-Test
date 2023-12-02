@@ -49,6 +49,9 @@ const UserSchema = new Schema({
         type:String,
         default:null,
     },
+    ChangePasswordTime:{
+        type:Date,
+    }
 },{
     timestamps:true,
 });

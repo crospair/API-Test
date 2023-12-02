@@ -9,9 +9,14 @@ const CouponSchema = new Schema({
         type:Number,
         required:true
     },
-    UsedBy:
-        [{type:Types.ObjectId,ref:'User'}],
-        expireDate:Date,
+    UsedBy:[{
+        type:Types.ObjectId,ref:'User'
+    }],
+
+    ExpirationDate:{
+        type:Date,
+        required:true
+    },
 
     CreatedBy:{type:Types.ObjectId,ref:'User'},
     EditedBy:{type:Types.ObjectId,ref:'User'},

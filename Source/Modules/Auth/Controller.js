@@ -5,16 +5,17 @@ import UserModel from "../../../Models/UserModel.js";
 import cloudinary from '../../../Services/Cloudinary.js';
 import { SendEmail } from '../../../Services/NodeMailer.js';
 
-export const SignUp = async (req,res)=>{
+export const SignUp = async (req,res,next)=>{
     const {Username, Email, Password, Gender} = req.body
     const Check = await UserModel.findOne({Email});
     if(Check){
-        return res.status(409).json({Message:"Email Already Exists"});
+        return next(new Error("Email Already Exists",{cause:409}));
     }
+    
     const HashedPass = bcrypt.hashSync(Password,parseInt(process.env.SALTROUND));
 
     const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{
-        folder:`${process.env.APP_NAME}/Users`
+        folder:`${process.env.APP_NAME}/Users/${req.body.Username}`
     })
 
     const {Token} = jwt.sign({Email},process.env.CONFIRMSECRET)
@@ -24,15 +25,18 @@ export const SignUp = async (req,res)=>{
     const CreateUser = await UserModel.create({Username,Email,Password:HashedPass,ProfilePicture:{secure_url,public_id},Gender});
     return res.status(200).json({Message:"Success",CreateUser});
 }
-export const Signin = async (req,res)=>{
+export const Signin = async (req,res,next)=>{
     const {Email,Password} = req.body;
     const User = await UserModel.findOne({Email});
     if(!User){
-        return res.status(400).json({Message:"Invalid Account"});
+        return next(new Error("Invalid Email",{cause:400}));
+    }
+    if(User.ConfirmEmail==false){
+        return next(new Error("Please Confirm Your Email First",{cause:400}));
     }
     const Match = bcrypt.compareSync(Password,User.Password);
     if(!Match){
-        return res.status(400).json({Message:"Invalid Password"});
+        return next(new Error("Invalid Password",{cause:400}));
     }
     const Token = jwt.sign({ID:User._id,Role:User.Role,Status:User.Status},process.env.LOGINSIGNATURE,
         {expiresIn: '50m'});
@@ -41,22 +45,22 @@ export const Signin = async (req,res)=>{
     return res.status(200).json({Message:"Success",Token,RefreshToken});
 }
 
-export const ConfirmEmail = async(req,res)=>{
+export const ConfirmEmail = async(req,res,next)=>{
     const Token = req.params.token;
     const VerifyDecoded = jwt.verify(Token,process.env.CONFIRMSECRET);
     if(!VerifyDecoded){
-        return res.status(404).json({Message:"Invalid Token"});
+        return next(new Error("Invalid Token",{cause:400}));
     }
     const User = await UserModel.findOneAndUpdate({Email:VerifyDecoded.Email,Confirmed:false},
         {Confirmed:true}
         );
         if(!User){
-            return res.status(400).json({Message:"Invalid Verification Or Email Has Been Already Confirmed"});
+            return next(new Error("Invalid Verification or Email Has Been Already Confirmed",{cause:400}));
         }
         return res.status(200).json({Message:"Successfully Verified This Email"});
 }
 
-export const ResetPassCode = async (req,res)=>{
+export const ResetPassCode = async (req,res,next)=>{
     const {Email} = req.body;
     let Code = customAlphabet('123ABC',4);
     Code = Code();
@@ -66,21 +70,22 @@ export const ResetPassCode = async (req,res)=>{
     return res.status(200).json({Message:"Success",User})
 }
 
-export const ResetPassword = async (req,res)=>{
+export const ResetPassword = async (req,res,next)=>{
     const {Email,Password,Code} =req.body
     const User = await UserModel.findOne({Email});
     if(!User){
-        return res.status(404).json({Message:"Email Not Found"});
+        return next(new Error("Email Not Found",{cause:400}));
     }
     if(User.SendCode != Code){
-        return res.status(400).json({Message:"Invalid Code"});
+        return next(new Error("Invalid Code",{cause:400}));
     }
     let match = bcrypt.compare(Password,User.Password);
     if(match){
-        return res.status(409).json({Message:"New Password Cannot be Same as Old Password"});
+        return next(new Error("You New Password Cannot be the same as your Old Password",{cause:400}));
     }
     User.Password = await bcrypt.hash(Password,parseInt(process.env.SALTROUND));
     User.SendCode = null;
+    User.ChangePasswordTime = Date.now();
     await User.save();
     return res.status(200).json({Message:"Success"});
 }

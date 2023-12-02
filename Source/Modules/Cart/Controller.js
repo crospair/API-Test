@@ -1,11 +1,11 @@
 import CartModel from "../../../Models/CartModel.js"
 
-export const GetCart = async (req,res)=>{
+export const GetCart = async (req,res,next)=>{
     const Cart = await CartModel.findOne({UserID:req.user._id});
     return res.status(201).json({Message:"Displaying Cart Components:",Cart});
 }
 
-export const CreateCart = async (req,res)=>{
+export const CreateCart = async (req,res,next)=>{
     const {ProductID,Quantity} = req.body
 const Cart = await CartModel.findOne({UserID:req.user._id});
 if(!Cart){
@@ -31,7 +31,7 @@ if(!Cart){
 return res.status(201).json({Message:"Success",Cart});
 }
 
-export const RemoveItem = async (req,res)=>{
+export const RemoveItem = async (req,res,next)=>{
     const {ProductID} = req.body;
     const Cart = await CartModel.findOneAndUpdate({UserID:req.user._Id},{
         $pull:{
@@ -43,7 +43,7 @@ export const RemoveItem = async (req,res)=>{
     return res.json({Message:"Item Removed Successfully"});
 }
 
-export const ClearCart = async (req,res)=>{
+export const ClearCart = async (req,res,next)=>{
     const ClearCart = await CartModel.findOneAndUpdate({UserID:req.user._id},{
         Products: []},
         {new:true});
