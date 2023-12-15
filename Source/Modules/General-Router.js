@@ -7,6 +7,7 @@ import Connect from '../../Database/Connection.js';
 import CartRouter from './Cart/Router.js';
 import ProductRouter from './Products/Router.js'
 import OrderRouter from './Order/Router.js';
+import UserRouter from './User/Router.js'
 import { GlobalErrorHandler } from '../Middleware/ErrorHandling.js';
 
 const InitiateApp = async (App,express)=>{
@@ -20,6 +21,7 @@ const InitiateApp = async (App,express)=>{
     App.use('/Product',ProductRouter);
     App.use('/Cart', CartRouter);
     App.use('/Order',OrderRouter);
+    App.use('/User',UserRouter);
     App.get('/',(req,res)=>{
         res.json({Message:"Welcome"})
     });

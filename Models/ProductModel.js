@@ -13,11 +13,11 @@ const ProductSchema = new Schema({
         type:String,
     },
     Stock:{
-        type:String,
+        type:Number,
         default:1
     },
     Price:{
-        type:String,
+        type:Number,
         required:true
     },
     Discount:{

@@ -31,7 +31,7 @@ export const Signin = async (req,res,next)=>{
     if(!User){
         return next(new Error("Invalid Email",{cause:400}));
     }
-    if(User.ConfirmEmail==false){
+    if(User.Confirmed==false){
         return next(new Error("Please Confirm Your Email First",{cause:400}));
     }
     const Match = bcrypt.compareSync(Password,User.Password);

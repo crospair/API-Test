@@ -10,9 +10,10 @@ import * as Validators from './Validation.js'
 const Nav = Router();
 
 Nav.use('/:id/SubCategory',SubCategoryRouter);
-Nav.get('/',Auth(Object.values(Roles)),asyncHandler(Categories.GetCategories));
-Nav.get('/Active',Auth(EndPoint.GetActive),asyncHandler(Categories.GetActiveCategory));
-Nav.get('/:id',Auth(EndPoint.GetSpecific),Validation(Validators.GetSpecificCategory),asyncHandler(Categories.SpecificCategory));
+Nav.get('/',Auth(EndPoint.GetAll),asyncHandler(Categories.GetCategories));
+Nav.get('/Active',asyncHandler(Categories.GetActiveCategory));
+Nav.delete('/:id',Auth(EndPoint.Delete),asyncHandler(Categories.DeleteCategory));
+Nav.get('/:id',Validation(Validators.GetSpecificCategory),asyncHandler(Categories.SpecificCategory));
 Nav.post('/Create',Auth(EndPoint.Create),fileUpload(FileTypes.image).single('Image'),Validation(Validators.CreateCategory),asyncHandler(Categories.CreateCategory));
 Nav.put('/:id',Auth(EndPoint.Update),fileUpload(FileTypes.image).single('image'),Validation(Validators.UpdateCategory),asyncHandler(Categories.UpdateCategory));
 
