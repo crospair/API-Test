@@ -3,7 +3,7 @@ import { EndPoint } from "./Endpoint.js";
 import * as Categories from "./Controller.js";
 import SubCategoryRouter from '../SubCategory/Router.js'
 import fileUpload, { FileTypes } from "../../../Services/Multer.js";
-import { Auth, Roles } from "../../Middleware/AuthMiddleware.js";
+import { Auth } from "../../Middleware/AuthMiddleware.js";
 import { asyncHandler } from "../../Middleware/ErrorHandling.js";
 import { Validation } from "../../Middleware/Joi.js";
 import * as Validators from './Validation.js'

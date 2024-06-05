@@ -4,7 +4,6 @@ import SubCategoryModel from "../../../Models/SubCategoryModel.js";
 import Cloudinary from "../../../Services/Cloudinary.js";
 import ProductModel from "../../../Models/ProductModel.js";
 import { Pagination } from "../../../Services/Pagination.js";
-import { Query } from "mongoose";
 
 export const GetProducts = async (req,res,next)=>{
     

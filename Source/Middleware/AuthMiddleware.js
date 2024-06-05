@@ -27,7 +27,7 @@ export const Auth = (AccessRoles = [])=>{
         }
         req.user = User;
     }catch(error){
-        res.json({Message:"Caught Error",error:error.stack})
+       return res.json({Message:"Caught Error",error:error.stack})
     }
     next()
 }
