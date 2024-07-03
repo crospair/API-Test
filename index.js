@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import cors from "cors";
 import express from 'express';
 import InitiateApp from './Source/Modules/General-Router.js';
 

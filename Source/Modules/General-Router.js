@@ -1,3 +1,4 @@
+import cors from "cors";
 import ProductsRouter from './Products/Router.js';
 import CategoriesRouter from './Categories/Router.js';
 import AuthRouter from './Auth/Router.js';
@@ -11,6 +12,7 @@ import UserRouter from './User/Router.js'
 import { GlobalErrorHandler } from '../Middleware/ErrorHandling.js';
 
 const InitiateApp = async (App,express)=>{
+    App.use(cors())
     App.use(express.json());
     Connect();
     App.use('/Auth',AuthRouter);
